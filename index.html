@@ -59,7 +59,6 @@ td:first-child{text-align:left;}
 
 <div class="container">
 
-<!-- ================= SRISHTI ================= -->
 <div class="student">
 <h2>Srishti</h2>
 <div id="srishti_overall">Overall: 0%</div>
@@ -76,11 +75,12 @@ const phy11=[
 "Laws of Motion","Work Energy Power","Centre of Mass & Rotation",
 "Gravitation","Mechanical Properties of Solids","Mechanical Properties of Fluids",
 "Thermal Properties","Thermodynamics","Kinetic Theory",
-"Oscillations","Waves"];
-phy11.forEach((c,i)=>{
+"Oscillations","Waves"
+];
+phy11.forEach(c=>{
 document.write(`<tr><td>${c}</td>
-<td><input type=checkbox class="s_phy"></td>
-<td><input type=checkbox class="s_phy"></td></tr>`);
+<td><input type="checkbox" class="s_phy"></td>
+<td><input type="checkbox" class="s_phy"></td></tr>`);
 });
 </script>
 </table>
@@ -97,11 +97,12 @@ const chem11=[
 "Some Basic Concepts","Structure of Atom","Classification of Elements",
 "Chemical Bonding","States of Matter","Thermodynamics",
 "Equilibrium","Redox Reactions","Hydrogen","s-Block Elements",
-"Organic Chemistry – Basics","Hydrocarbons","Environmental Chemistry"];
+"Organic Chemistry – Basics","Hydrocarbons","Environmental Chemistry"
+];
 chem11.forEach(c=>{
 document.write(`<tr><td>${c}</td>
-<td><input type=checkbox class="s_chem"></td>
-<td><input type=checkbox class="s_chem"></td></tr>`);
+<td><input type="checkbox" class="s_chem"></td>
+<td><input type="checkbox" class="s_chem"></td></tr>`);
 });
 </script>
 </table>
@@ -119,18 +120,18 @@ const math11=[
 "Complex Numbers","Linear Inequalities","Permutations & Combinations",
 "Binomial Theorem","Sequences & Series","Straight Lines",
 "Conic Sections","3D Geometry","Limits & Derivatives",
-"Statistics","Probability"];
+"Statistics","Probability"
+];
 math11.forEach(c=>{
 document.write(`<tr><td>${c}</td>
-<td><input type=checkbox class="s_math"></td>
-<td><input type=checkbox class="s_math"></td></tr>`);
+<td><input type="checkbox" class="s_math"></td>
+<td><input type="checkbox" class="s_math"></td></tr>`);
 });
 </script>
 </table>
 </div>
 </div>
 
-<!-- ================= NAVYA ================= -->
 <div class="student">
 <h2>Navya</h2>
 <div id="navya_overall">Overall: 0%</div>
@@ -142,12 +143,11 @@ document.write(`<div class="subject">
 <div class="percent" id="n_${sub}_p">0%</div>
 <div class="progress"><div class="fill" id="n_${sub}_b"></div></div>
 <table><tr><th>Chapter</th><th>T</th><th>N</th></tr>`);
-
 let arr=sub==="phy"?phy11:sub==="chem"?chem11:math11;
 arr.forEach(c=>{
 document.write(`<tr><td>${c}</td>
-<td><input type=checkbox class="n_${sub}"></td>
-<td><input type=checkbox class="n_${sub}"></td></tr>`);
+<td><input type="checkbox" class="n_${sub}"></td>
+<td><input type="checkbox" class="n_${sub}"></td></tr>`);
 });
 document.write(`</table></div>`);
 });
@@ -156,11 +156,38 @@ document.write(`</table></div>`);
 </div>
 </div>
 
-<script>
-document.querySelectorAll("input").forEach((b,i)=>{
-b.id="cb"+i;
-b.checked=localStorage.getItem(b.id)==="1";
-b.onchange=()=>{localStorage.setItem(b.id,b.checked?1:0);update();}
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBTqnpZ1_Dbvoc4nWerHC5aaEh7iTNmNVI",
+  authDomain: "tracker-290710.firebaseapp.com",
+  projectId: "tracker-290710",
+  storageBucket: "tracker-290710.firebasestorage.app",
+  messagingSenderId: "694437647134",
+  appId: "1:694437647134:web:cf423fca69691bde0a6f0f"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const ref = doc(db, "tracker", "global");
+
+document.querySelectorAll("input").forEach((cb,i)=>cb.id="cb_"+i);
+
+onSnapshot(ref, snap=>{
+  if(!snap.exists()) return;
+  const d=snap.data();
+  document.querySelectorAll("input").forEach(cb=>{
+    if(d[cb.id]!==undefined) cb.checked=d[cb.id];
+  });
+  update();
+});
+
+document.querySelectorAll("input").forEach(cb=>{
+  cb.addEventListener("change",()=>{
+    setDoc(ref,{[cb.id]:cb.checked},{merge:true});
+  });
 });
 
 function calc(cls,p,b){
@@ -183,7 +210,6 @@ let nc=calc("n_chem","n_chem_p","n_chem_b");
 let nm=calc("n_math","n_math_p","n_math_b");
 document.getElementById("navya_overall").innerText="Overall: "+Math.round((np+nc+nm)/3)+"%";
 }
-update();
 </script>
 
 </body>
