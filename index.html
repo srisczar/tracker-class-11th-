@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Class 11 Tracker</title>
+
+<style>
+body{
+    background:#ffd6e8;
+    font-family: Arial, sans-serif;
+    padding:10px;
+    font-weight:bold;
+}
+h1{text-align:center;}
+.container{
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+}
+.student{
+    background:#fff0f6;
+    padding:10px;
+    border-radius:10px;
+    width:100%;
+    max-width:520px;
+}
+.subject{
+    margin-top:15px;
+}
+.progress{
+    background:#ffc1dc;
+    height:12px;
+    border-radius:6px;
+    overflow:hidden;
+}
+.fill{
+    background:#ff2f92;
+    height:100%;
+    width:0%;
+}
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:5px;
+}
+td,th{
+    border:1px solid #ff99c8;
+    padding:4px;
+    text-align:center;
+}
+td:first-child{text-align:left;}
+.percent{font-size:14px;margin:4px 0;}
+</style>
+</head>
+
+<body>
+
+<h1>Class 11 NCERT Progress Tracker</h1>
+
+<div class="container">
+
+<!-- ================= SRISHTI ================= -->
+<div class="student">
+<h2>Srishti</h2>
+<div id="srishti_overall">Overall: 0%</div>
+
+<div class="subject">
+<h3>Physics</h3>
+<div class="percent" id="s_phy_p">0%</div>
+<div class="progress"><div class="fill" id="s_phy_b"></div></div>
+<table>
+<tr><th>Chapter</th><th>T</th><th>N</th></tr>
+<script>
+const phy11=[
+"Units & Measurements","Motion in a Straight Line","Motion in a Plane",
+"Laws of Motion","Work Energy Power","Centre of Mass & Rotation",
+"Gravitation","Mechanical Properties of Solids","Mechanical Properties of Fluids",
+"Thermal Properties","Thermodynamics","Kinetic Theory",
+"Oscillations","Waves"];
+phy11.forEach((c,i)=>{
+document.write(`<tr><td>${c}</td>
+<td><input type=checkbox class="s_phy"></td>
+<td><input type=checkbox class="s_phy"></td></tr>`);
+});
+</script>
+</table>
+</div>
+
+<div class="subject">
+<h3>Chemistry</h3>
+<div class="percent" id="s_chem_p">0%</div>
+<div class="progress"><div class="fill" id="s_chem_b"></div></div>
+<table>
+<tr><th>Chapter</th><th>T</th><th>N</th></tr>
+<script>
+const chem11=[
+"Some Basic Concepts","Structure of Atom","Classification of Elements",
+"Chemical Bonding","States of Matter","Thermodynamics",
+"Equilibrium","Redox Reactions","Hydrogen","s-Block Elements",
+"Organic Chemistry – Basics","Hydrocarbons","Environmental Chemistry"];
+chem11.forEach(c=>{
+document.write(`<tr><td>${c}</td>
+<td><input type=checkbox class="s_chem"></td>
+<td><input type=checkbox class="s_chem"></td></tr>`);
+});
+</script>
+</table>
+</div>
+
+<div class="subject">
+<h3>Maths</h3>
+<div class="percent" id="s_math_p">0%</div>
+<div class="progress"><div class="fill" id="s_math_b"></div></div>
+<table>
+<tr><th>Chapter</th><th>T</th><th>N</th></tr>
+<script>
+const math11=[
+"Sets","Relations & Functions","Trigonometric Functions",
+"Complex Numbers","Linear Inequalities","Permutations & Combinations",
+"Binomial Theorem","Sequences & Series","Straight Lines",
+"Conic Sections","3D Geometry","Limits & Derivatives",
+"Statistics","Probability"];
+math11.forEach(c=>{
+document.write(`<tr><td>${c}</td>
+<td><input type=checkbox class="s_math"></td>
+<td><input type=checkbox class="s_math"></td></tr>`);
+});
+</script>
+</table>
+</div>
+</div>
+
+<!-- ================= NAVYA ================= -->
+<div class="student">
+<h2>Navya</h2>
+<div id="navya_overall">Overall: 0%</div>
+
+<script>
+["phy","chem","math"].forEach(sub=>{
+document.write(`<div class="subject">
+<h3>${sub.toUpperCase()}</h3>
+<div class="percent" id="n_${sub}_p">0%</div>
+<div class="progress"><div class="fill" id="n_${sub}_b"></div></div>
+<table><tr><th>Chapter</th><th>T</th><th>N</th></tr>`);
+
+let arr=sub==="phy"?phy11:sub==="chem"?chem11:math11;
+arr.forEach(c=>{
+document.write(`<tr><td>${c}</td>
+<td><input type=checkbox class="n_${sub}"></td>
+<td><input type=checkbox class="n_${sub}"></td></tr>`);
+});
+document.write(`</table></div>`);
+});
+</script>
+
+</div>
+</div>
+
+<script>
+document.querySelectorAll("input").forEach((b,i)=>{
+b.id="cb"+i;
+b.checked=localStorage.getItem(b.id)==="1";
+b.onchange=()=>{localStorage.setItem(b.id,b.checked?1:0);update();}
+});
+
+function calc(cls,p,b){
+let x=document.querySelectorAll("."+cls);
+let c=[...x].filter(e=>e.checked).length;
+let per=Math.round((c/x.length)*100||0);
+document.getElementById(p).innerText=per+"%";
+document.getElementById(b).style.width=per+"%";
+return per;
+}
+
+function update(){
+let sp=calc("s_phy","s_phy_p","s_phy_b");
+let sc=calc("s_chem","s_chem_p","s_chem_b");
+let sm=calc("s_math","s_math_p","s_math_b");
+document.getElementById("srishti_overall").innerText="Overall: "+Math.round((sp+sc+sm)/3)+"%";
+
+let np=calc("n_phy","n_phy_p","n_phy_b");
+let nc=calc("n_chem","n_chem_p","n_chem_b");
+let nm=calc("n_math","n_math_p","n_math_b");
+document.getElementById("navya_overall").innerText="Overall: "+Math.round((np+nc+nm)/3)+"%";
+}
+update();
+</script>
+
+</body>
+</html>
